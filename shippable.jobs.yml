@@ -1,0 +1,33 @@
+jobs:
+  - name: build-app
+    type: runSh
+    steps:
+      - IN: sampleapp_repo
+      - IN: dockerhub
+      - OUT: app-img
+      - TASK:
+        - script: ./IN/sampleapp_repo/gitRepo/build.sh
+    on_success:
+      - script: echo 'on success !!!!!'
+    on_failure:
+      - script: echo 'Failed job .... :('
+
+  - name: sampleapp-man
+    type: manifest
+    steps:
+      - IN: options
+      - IN: app-img
+        force: true
+        versionName: latest
+
+  - name: sampleapp-deploy
+    type: deploy
+    steps:
+      - IN: sampleapp-man
+      - IN: ddc-cluster
+
+  - name: bat_runCI
+    type: runCI
+    steps:
+      - IN: bat_params
+      - IN: sampleapp-deploy

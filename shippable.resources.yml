@@ -1,0 +1,41 @@
+Resources:
+  # Pointer to a repository on source control
+  - name: sampleapp_repo
+    type: gitRepo
+    integration: github
+    pointer:
+      sourceName: shippableSamples/build-test-deploy-with-pipelines
+      branch: master
+
+  # Points to docker registry where we will push our image
+  - name: dockerhub
+    type: integration
+    integration: "dockerhub"
+
+  # Points to the image that we will push
+  - name: app-img
+    type: image
+    integration: dockerhub
+    pointer:
+      sourceName: "shippableSamples/sampleapp"
+    seed:
+      versionName: latest
+
+  # A cluster to deploy our app
+  - name: ddc-cluster
+    type: cluster
+    integration: ddc-cluster
+
+  # docker options that can be appended to a docker image to be pushed
+  - name: options
+    type: dockerOptions
+    version:
+      portMappings:
+        - "51000:51000"
+
+ - name: bat_params
+    type: params
+    version:
+      params:
+        url: "www.example.com"
+        port: 51000
